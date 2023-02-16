@@ -585,6 +585,7 @@ Describe "Invoke-WebRequest tests" -Tags "Feature", "RequireAdminOnWindows" {
         $uri = Get-WebListenerUrl -Test 'POST'
         $Headers = @{
             'Content-Type'  = 'application/json; charset=utf-8'
+            'test1' = 'test1'
         }
         # Body must contain non-ASCII characters 
         $command = "Invoke-WebRequest -Uri '$uri' -Body 'проверка' -Headers $Headers  -Method 'POST'"
