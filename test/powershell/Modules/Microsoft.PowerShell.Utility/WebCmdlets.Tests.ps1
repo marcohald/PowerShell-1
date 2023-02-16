@@ -581,6 +581,22 @@ Describe "Invoke-WebRequest tests" -Tags "Feature", "RequireAdminOnWindows" {
         $object.Data | Should -BeExactly 'проверка'
     }
 
+    It "Invoke-WebRequest supports sending request as UTF-8 (From Header)." {
+        $uri = Get-WebListenerUrl -Test 'POST'
+        $Headers = @{
+            'Content-Type'  = 'application/json; charset=utf-8'
+        }
+        # Body must contain non-ASCII characters
+        $command = "Invoke-WebRequest -Uri '$uri' -Body 'проверка' -Headers $Headers  -Method 'POST'"
+
+        $result = ExecuteWebCommand -command $command
+        ValidateResponse -response $result
+
+        $Result.Output.Encoding.BodyName | Should -BeExactly 'utf-8'
+        $object = $Result.Output.Content | ConvertFrom-Json
+        $object.Data | Should -BeExactly 'проверка'
+    }
+
     It "Invoke-WebRequest supports request that returns page containing CodPage 936 data." {
         $uri = Get-WebListenerUrl -Test 'Encoding' -TestValue 'CP936'
         $command = "Invoke-WebRequest -Uri '$uri'"
